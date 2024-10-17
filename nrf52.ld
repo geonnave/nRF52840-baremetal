@@ -13,16 +13,22 @@ SECTIONS
     *(.text)
   } > FLASH
 
+  _la_data = LOADADDR(.data);
+
   .data :
   {
+    _sdata = .;
     *(.data)
+    _edata = .;
   } > RAM AT > FLASH
 
   .bss :
   {
-    __bss_start__ = .;
+    _sbss = .;
+    __bss_start__ = _sbss;
     *(.bss)
-    __bss_end__ = .;
+    _ebss = .;
+    __bss_end__ = _ebss;
   } > RAM
 
   /* Define the top of the stack (end of RAM) */
