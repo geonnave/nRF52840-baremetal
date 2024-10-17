@@ -1,18 +1,12 @@
-#include<stdint.h>
-
-#define SRAM_START  0x20000000U
-#define SRAM_SIZE   (64U * 1024U) //128KB
-#define SRAM_END    ((SRAM_START) + (SRAM_SIZE))
-
-#define STACK_START   SRAM_END
+#include <stdint.h>
 
 extern uint32_t _etext;
 extern uint32_t _sdata;
 extern uint32_t _edata;
 extern uint32_t _la_data;
-
 extern uint32_t _sbss;
 extern uint32_t _ebss;
+extern uint32_t _stack_top;
 
 int main(void);
 
@@ -92,7 +86,7 @@ void SPIM3_IRQHandler                                            (void) __attrib
 typedef void(*vector_table_t)(void);
 extern const vector_table_t _vectors[64];
 const vector_table_t _vectors[64] __attribute__((used, section(".isr_vector"))) = {
-   (vector_table_t) STACK_START,
+   (vector_table_t)&_stack_top,
     /* Exceptions */
     Reset_Handler,
     NMI_Handler,
@@ -169,13 +163,10 @@ void Default_Handler(void)
 }
 
 void Reset_Handler(void) {
-
 	// copy .data section to RAM
 	uint32_t size = (uint32_t)&_edata - (uint32_t)&_sdata;
-	
 	uint8_t *pDst = (uint8_t*)&_sdata; // RAM
 	uint8_t *pSrc = (uint8_t*)&_la_data; // Flash
-	
 	for(uint32_t i =0 ; i < size ; i++) {
 		*pDst++ = *pSrc++;
 	}
@@ -188,5 +179,4 @@ void Reset_Handler(void) {
 	}
 
 	main();
-	
 }
