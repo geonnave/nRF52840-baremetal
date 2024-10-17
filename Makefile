@@ -5,8 +5,6 @@ LDFLAGS= -mcpu=$(MACH) -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -nostartfiles 
 
 all: main.o startup.o  final.elf
 
-# startup.o: startup.s
-# 	$(CC) $(CFLAGS) -o $@ $^
 startup.o: nrf52_startup.c
 	$(CC) $(CFLAGS) -o $@ $^
 

@@ -31,6 +31,5 @@ SECTIONS
     __bss_end__ = _ebss;
   } > RAM
 
-  /* Define the top of the stack (end of RAM) */
   _stack_top = ORIGIN(RAM) + LENGTH(RAM);
 }

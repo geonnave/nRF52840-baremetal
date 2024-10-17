@@ -1,30 +1,31 @@
 #include <stdint.h>
+#include "main.h"
 
-#define GPIO_BASE        0x50000000U
-#define GPIO_OUT         (*(volatile unsigned int *)(GPIO_BASE + 0x504))  // GPIO output register
-#define GPIO_OUTSET      (*(volatile unsigned int *)(GPIO_BASE + 0x508))  // GPIO output set register
-#define GPIO_OUTCLR      (*(volatile unsigned int *)(GPIO_BASE + 0x50C))  // GPIO output clear register
-#define GPIO_DIR         (*(volatile unsigned int *)(GPIO_BASE + 0x514))  // GPIO direction register
+int main(void) {
+    init_leds();
 
-#define LED_PIN          13  // LED1 on nRF52840 DK (P0.13)
+    while (1) {
+        blink_leds(500000);
+    }
+}
+
+// ================================ blink leds ================================
 
 void delay(volatile uint32_t duration) {
     while (duration--);
 }
 
-int main(void) {
-    // Set LED_PIN (P0.13) as output
-    GPIO_DIR |= (1 << LED_PIN);
-
-    while (1) {
-        // Turn the LED on
-        GPIO_OUTCLR = (1 << LED_PIN);  // Clear bit to turn on (assuming active-low LED)
-        delay(1000000);
-
-        // Turn the LED off
-        GPIO_OUTSET = (1 << LED_PIN);  // Set bit to turn off
-        delay(1000000);
+void init_leds() {
+    for (int i = 0; i < led_pins_size; i++) {
+        GPIO_DIR |= (1 << led_pins[i]);
     }
-
-    for (;;);
 }
+
+void blink_leds(uint32_t duration) {
+    for (int i = 0; i < led_pins_size; i++) {
+        GPIO_OUTCLR = (1 << led_pins[i]);
+        delay(duration);
+        GPIO_OUTSET = (1 << led_pins[i]);
+    }
+}
+// ============================================================================
