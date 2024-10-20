@@ -1,3 +1,6 @@
+#ifndef LED_H
+#define LED_H
+
 #include <stdint.h>
 #include <stddef.h>
 
@@ -12,9 +15,7 @@
 #define LED_PIN_3 15
 #define LED_PIN_4 16
 
-uint8_t led_pins[] = {LED_PIN_2, LED_PIN_4, LED_PIN_3, LED_PIN_1};
-size_t led_pins_size = sizeof(led_pins) / sizeof(led_pins[0]);
-
-void delay(volatile uint32_t duration);
 void init_leds();
 void blink_leds();
+
+#endif // LED_H
